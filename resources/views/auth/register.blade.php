@@ -29,6 +29,15 @@
                         </div>
                     </div>
                     <div class="mb-3 row">
+                        <label for="email" class="col-md-4 col-form-label text-md-end text-start">Phone Number</label>
+                        <div class="col-md-6">
+                          <input type="number" class="form-control @error('phone_number') is-invalid @enderror" id="phone_number" name="phone_number" value="{{ old('phone_number') }}">
+                            @if ($errors->has('phone_number'))
+                                <span class="text-danger">{{ $errors->first('phone_number') }}</span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
                         <label for="password" class="col-md-4 col-form-label text-md-end text-start">Password</label>
                         <div class="col-md-6">
                           <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password">
