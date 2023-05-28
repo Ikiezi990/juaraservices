@@ -3,6 +3,11 @@
 use App\Http\Controllers\Admin\AdminAuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginRegisterController;
+use App\Http\Controllers\DepositController;
+use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\TransaksiController;
+use App\Models\Produk;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,22 +23,19 @@ use App\Http\Controllers\Auth\LoginRegisterController;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::resource('admin/produk', ProdukController::class)->middleware('adminauth');
+Route::resource('/deposit', DepositController::class)->middleware('auth');
+Route::resource('/transaksi', TransaksiController::class)->middleware('auth');
 
 Route::controller(LoginRegisterController::class)->group(function () {
     Route::get('/register', 'register')->name('register');
     Route::post('/store', 'store')->name('store');
     Route::get('/login', 'login')->name('login');
     Route::post('/authenticate', 'authenticate')->name('authenticate');
-    Route::get('/dashboard', 'dashboard')->name('dashboard');
+    Route::resource('/dashboard', App\Http\Controllers\DashboardController::class);
     Route::post('/logout', 'logout')->name('logout');
 });
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::get('/login', [AdminAuthController::class, 'getLogin'])->name('adminLogin');
     Route::post('/login', [AdminAuthController::class, 'postLogin'])->name('adminLoginPost');
- 
-    Route::group(['middleware' => 'adminauth'], function () {
-        Route::get('/', function () {
-            return view('welcome');
-        })->name('adminDashboard');
-    });
 });
