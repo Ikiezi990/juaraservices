@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Deposit;
+use Illuminate\Console\View\Components\Alert;
 
 class DepositController extends Controller
 {
@@ -52,6 +53,8 @@ class DepositController extends Controller
             'status' => 'Pending',
         ];
         Deposit::insert($data);
+        alert()->success('Berhasil', 'Permintaan deposit anda berhasil di kirim !');
+
         return redirect(route('deposit.index'));
     }
 

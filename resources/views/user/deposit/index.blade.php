@@ -1,5 +1,7 @@
 @extends('usertemplates.app')
 @section('content')
+@include('sweetalert::alert')
+
 <div class="container">
     <div class="row">
         <div class="col-md-6">

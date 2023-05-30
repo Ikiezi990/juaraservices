@@ -1,5 +1,6 @@
 @extends('usertemplates.app')
 @section('content')
+@include('sweetalert::alert')
 <div class="container">
     <div class="row">
         <div class="col-md-6">
@@ -18,12 +19,17 @@
                 @method('POST')
                 <div class="form-group">
                     <label for="produk" class="form-group">Produk</label>
-                    <select name="produk_id" id="produk" class="form-control">
+                    <select name="produk_id" id="produk" class="form-control produk">
                         <option value="">Pilih Produk ---</option>
                         @foreach($produk as $row)
-                        <option value="{{ $row->id }}">{{ $row->nama_produk }}</option>
+                        <option value="{{ $row->id }}" onclick="fetchNominal(<?= $row->id ?>)">{{ $row->nama_produk }}</option>
                         @endforeach
                     </select>
+                </div>
+                <div class="form-group">
+                    <label for="" class="form-label">Harga Produk</label>
+                    <input type="text" class="form-control" id="harga" disabled>
+                    <input type="hidden" name="harga" class="harga">
                 </div>
                 <div class="form-group">
                     <label for="screenshoot_imei" class="form-label">Screenshoot Imei</label>
@@ -70,5 +76,30 @@
         </div>
     </div>
 </div>
+<script>
+    $('.produk').on('change', function() {
+        id = this.value;
+        $.get(`/price/${id}`, function(data) {
+            $('#harga').val(formatRupiah(data, 'Rp. '));
+            $('.harga').val(data);
+        });
+    });
+    /* Fungsi formatRupiah */
+    function formatRupiah(angka, prefix) {
+        var number_string = angka.replace(/[^,\d]/g, '').toString(),
+            split = number_string.split(','),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
 
+        // tambahkan titik jika yang di input sudah menjadi angka ribuan
+        if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+    }
+</script>
 @endsection

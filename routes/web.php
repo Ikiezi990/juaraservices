@@ -21,7 +21,8 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $data['title'] = "Landing Page | Juara Services";
+    return view('welcome', $data);
 });
 Route::resource('admin/produk', ProdukController::class)->middleware('adminauth');
 Route::resource('/deposit', DepositController::class)->middleware('auth');
@@ -39,3 +40,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::get('/login', [AdminAuthController::class, 'getLogin'])->name('adminLogin');
     Route::post('/login', [AdminAuthController::class, 'postLogin'])->name('adminLoginPost');
 });
+Route::get('price/{id}', function ($id) {
+    $produk = Produk::where('id', $id)->first();
+    $harga = $produk->harga;
+    return $harga;
+})->name('price');
